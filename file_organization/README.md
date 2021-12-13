@@ -1,16 +1,31 @@
-# file_organization
 
-A new Flutter project.
+# File Organization
+    Beginer Level App to learn how Flutter handles File 
+        and learnig some functionality of path_finder package
+        also converting json to string and string to json
+        
+    
+    
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Lessons Learned
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+   - Including library in Flutter app
+   - Future async,and await
+   - Reading and wrting Text/JSON data into local file
+   - Converting JSON
+      - json.encode
+      - json.decode
+
+ ### Working with JSON
+   import build in library  `dart:convert`
+ ```dart
+    
+    json.encode(_myData); // for serialization
+    
+    json.decode(_myData); //  for deserialization
+ ```
+    
+        
