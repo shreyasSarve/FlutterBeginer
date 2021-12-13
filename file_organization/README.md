@@ -8,7 +8,9 @@
     
 
 
-
+### App Interface
+   ![ScreenShot](https://github.com/shreyasSarve/FlutterBeginer/blob/master/images/fileorganization/Screenshot%20from%202021-12-13%2015-53-36.png)
+   
 
 ## Lessons Learned
 
@@ -28,4 +30,5 @@
     json.decode(_myData); //  for deserialization
  ```
     
-        
+  
+  
