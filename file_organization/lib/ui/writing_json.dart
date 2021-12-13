@@ -1,6 +1,9 @@
+import 'dart:convert';
+
+import 'package:file_organization/model/storage_string.dart';
+import 'package:file_organization/widget/snackbar.dart';
 import 'package:file_organization/widget/textformfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class WritingJSONData extends StatefulWidget {
   const WritingJSONData({Key? key}) : super(key: key);
@@ -10,6 +13,7 @@ class WritingJSONData extends StatefulWidget {
 }
 
 class _WritingJSONDataState extends State<WritingJSONData> {
+  final _myStorage = Storage();
   final _idController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -41,24 +45,49 @@ class _WritingJSONDataState extends State<WritingJSONData> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
+            margin: const EdgeInsets.only(top: 30),
+            alignment: Alignment.bottomLeft,
+            child: const Text(
+              "Working With JSON Data",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
             alignment: Alignment.topLeft,
-            margin: const EdgeInsets.only(top: 30, bottom: 10),
+            margin: const EdgeInsets.only(bottom: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Text(
-                  "Working With JSON Data",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                ElevatedButton.icon(
+                  onPressed: _clearData,
+                  icon: Icon(
+                    Icons.clear_all_outlined,
+                    color: _clearColor(),
+                    size: 30,
                   ),
+                  label: const Text(""),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.white, elevation: 0),
                 ),
                 ElevatedButton.icon(
-                  onPressed: _onPressed,
+                  onPressed: _retrieveData,
+                  icon: Icon(
+                    Icons.replay_circle_filled,
+                    color: _retrieveColor(),
+                  ),
+                  label: const Text(""),
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.white, elevation: 0),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _saveData,
                   icon: Icon(
                     Icons.save,
-                    color: saveColor(),
-                    size: 40,
+                    color: _saveColor(),
+                    size: 30,
                   ),
                   label: const Text(""),
                   style: ElevatedButton.styleFrom(
@@ -88,7 +117,7 @@ class _WritingJSONDataState extends State<WritingJSONData> {
     );
   }
 
-  Color saveColor() {
+  Color _saveColor() {
     return _idController.text.isEmpty ||
             _lastNameController.text.isEmpty ||
             _firstNameController.text.isEmpty ||
@@ -97,13 +126,70 @@ class _WritingJSONDataState extends State<WritingJSONData> {
         : Colors.green;
   }
 
-  _onPressed() {
+  Color _clearColor() {
+    return _idController.text.isNotEmpty ||
+            _lastNameController.text.isNotEmpty ||
+            _firstNameController.text.isNotEmpty ||
+            _occupationController.text.isNotEmpty
+        ? Colors.green
+        : Colors.red;
+  }
+
+  Color _retrieveColor() {
+    return _idController.text.isEmpty &&
+            _firstNameController.text.isEmpty &&
+            _lastNameController.text.isEmpty &&
+            _occupationController.text.isEmpty
+        ? Colors.green
+        : Colors.red;
+  }
+
+  _saveData() {
     if (_idController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
         _firstNameController.text.isEmpty ||
         _occupationController.text.isEmpty) {
-      Scaffold.of(context).showSnackBar(
-         const  SnackBar(content: Text("Please Fill All the Values to Save")));
+      showSnackBar("Please Fill All the Values to Save", context);
+    } else {
+      Map<String, dynamic> jsonMap = {
+        "id": _idController.text.toString(),
+        "firstName": _firstNameController.text.toString(),
+        "lastName": _lastNameController.text.toString(),
+        "occupation": _occupationController.text.toLowerCase(),
+      };
+      try {
+        String jsonString = json.encode(jsonMap);
+        _myStorage.writingData(jsonString).then((value) {
+          showSnackBar("Json Written", context);
+          _idController.clear();
+          _firstNameController.clear();
+          _lastNameController.clear();
+          _occupationController.clear();
+        });
+      } catch (e) {
+        showSnackBar("Error While Writing Data", context);
+      }
     }
+  }
+
+  _clearData() {
+    if (_clearColor() == Colors.red) {
+      showSnackBar("NoData", context);
+    } else {
+      _idController.clear();
+      _lastNameController.clear();
+      _firstNameController.clear();
+      _occupationController.clear();
+    }
+  }
+
+  _retrieveData() {
+    _myStorage.readingData().then((value) {
+      Map<String, dynamic> personMap = jsonDecode(value);
+      _idController.text = personMap["id"];
+      _firstNameController.text = personMap["firstName"];
+      _lastNameController.text = personMap["lastName"];
+      _occupationController.text = personMap["occupation"];
+    });
   }
 }
