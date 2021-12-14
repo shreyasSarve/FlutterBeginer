@@ -23,10 +23,10 @@
  ### Working with JSON
    import build in library  `dart:convert`
  ```dart
-    
+    Map<String,dynamic> _mydata;
     json.encode(_myData); // for serialization
     
-    json.decode(_myData); //  for deserialization
+    _myData = json.decode(_myData); //  for deserialization
  ```
 
 
