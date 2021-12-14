@@ -12,6 +12,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      myData;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -19,9 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.blue.shade900,
       ),
       body: ListView.separated(
-          itemBuilder: (_, index) => CustomListtile(myData[index]),
+          itemBuilder: (_, index) => CustomListtile(myData[index],myData[index].id),
           separatorBuilder: (_, __) => const Divider(
-                height: 15,
+                height: 8,
                 color: Colors.blue,
               ),
           itemCount: myData.length),
