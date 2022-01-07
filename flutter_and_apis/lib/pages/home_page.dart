@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_and_apis/model/api_handler.dart';
 import 'package:flutter_and_apis/model/handler.dart';
@@ -13,11 +11,11 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-List<Nodes>? myData;
+List<FrontNode>? myData;
 bool _isLoading = true;
 
 class _MyHomePageState extends State<MyHomePage> {
-  late ApiResponse<List<Nodes>> _apiResponse;
+  late ApiResponse<List<FrontNode>> _apiResponse;
   NodesServices services = NodesServices();
   final globalKey = GlobalKey<ScaffoldState>();
   @override
@@ -28,7 +26,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _fetchData() async {
-    print("Inside _fetch");
     setState(() {
       _isLoading = true;
     });
@@ -37,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _isLoading = false;
     });
-    print("Hello Data ${_apiResponse.data[1]}");
   }
 
   @override
@@ -94,12 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _onFloatingActionPress() {
-    globalKey.currentState!.hideCurrentSnackBar();
+    // globalKey.currentState!.hideCurrentSnackBar();
+    ScaffoldMessenger.of(globalKey.currentContext!).hideCurrentSnackBar();
     Navigator.push(context, MaterialPageRoute(builder: (context) => Modify(0)))
         .then((value) => _fetchData());
   }
 
-  Widget _buildListTile(Nodes node, BuildContext context1) {
+  Widget _buildListTile(FrontNode node, BuildContext context1) {
     return Dismissible(
       key: ValueKey(node.noteID),
       direction: DismissDirection.startToEnd,
@@ -127,8 +124,21 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ListTile(
         title: Text(node.noteTitle),
         subtitle: Text(node.createDateTime.toString()),
-        onTap: () {
-          Scaffold.of(context1).showSnackBar(SnackBar(content: Text("hellow")));
+        onTap: () async {
+          final content = await NodesServices().getNode(node.noteID);
+          final backNode = BackNode(node, content.data);
+          Navigator.of(context1)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => Modify(
+                    1,
+                    backNode: backNode,
+                  ),
+                ),
+              )
+              .then(
+                (value) => _fetchData(),
+              );
         },
       ),
     );

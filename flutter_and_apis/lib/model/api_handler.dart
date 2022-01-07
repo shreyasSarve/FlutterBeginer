@@ -21,16 +21,16 @@ class NodesServices {
     'apiKey': '2539442c-336f-41d7-95e8-a7dec997104a',
     'Content-Type': 'application/json'
   };
-  Future<ApiResponse<List<Nodes>>> getResponce() {
+  Future<ApiResponse<List<FrontNode>>> getResponce() {
     return http.get(Uri.parse(url + '/notes'), headers: header).then((data) {
-      print(data.statusCode);
+      
       if (data.statusCode == 200) {
-        print(data.body);
+   
         final jsonData = json.decode(data.body);
-        final nodes = <Nodes>[];
+        final nodes = <FrontNode>[];
         for (var item in jsonData) {
           nodes.add(
-            Nodes(
+            FrontNode(
               item['noteID'],
               item['noteTitle'],
               DateTime.parse(item['createDateTime']),
@@ -38,9 +38,9 @@ class NodesServices {
             ),
           );
         }
-        return ApiResponse<List<Nodes>>(data: nodes, error: false);
+        return ApiResponse<List<FrontNode>>(data: nodes, error: false);
       } else {
-        return ApiResponse<List<Nodes>>(
+        return ApiResponse<List<FrontNode>>(
             data: [], error: true, errorMsg: "Some Error Occured");
       }
       // ignore: argument_type_not_assignable_to_error_handler
@@ -52,13 +52,13 @@ class NodesServices {
         data: " ", error: true, errorMsg: "Something Went wrong");
   }
 
-  Future<ApiResponse<String>> getNode() {
+  Future<ApiResponse<String>> getNode(String id) {
     return http
-        .get(Uri.parse(url + '/notes/BJLyLwNFiANH9F7VVupn'), headers: header)
+        .get(Uri.parse(url + '/notes/'+id), headers: header)
         .then(
       (value) {
         if (value.statusCode == 200) {
-          print(value.body);
+          
           final jsonData = json.decode(value.body);
           return ApiResponse<String>(data: jsonData['noteContent']);
         } else {
@@ -71,7 +71,8 @@ class NodesServices {
 
   Future<ApiResponse<bool>> createNode(InsertNode node) {
     return http
-        .post(Uri.parse(url+'/notes'), headers: header, body: json.encode(node.toJson()))
+        .post(Uri.parse(url + '/notes'),
+            headers: header, body: json.encode(node.toJson()))
         .then(
       (val) {
         if (val.statusCode == 201) //Status code here is 201 not 200
@@ -82,6 +83,21 @@ class NodesServices {
               data: false,
               error: true,
               errorMsg: "Something Wrong Happened ! ");
+        }
+      },
+    );
+  }
+
+  Future<ApiResponse<bool>> modifyNode(InsertNode node, String id) {
+    return http
+        .put(Uri.parse(url + '/notes/' + id),
+            headers: header, body: json.encode(node.toJson()))
+        .then(
+      (value) {
+        if (value.statusCode == 204) {     
+          return ApiResponse<bool>(data: true);
+        } else {
+          return ApiResponse(data: false, error: true, errorMsg: "Sorry Didi");
         }
       },
     );

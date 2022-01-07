@@ -1,14 +1,15 @@
-
-
-import 'package:flutter/material.dart';
-
-
-class Nodes {
+class FrontNode {
   String noteID;
 
   String noteTitle;
   DateTime createDateTime;
   DateTime latestEditDateTime;
-  Nodes(this.noteID, this.noteTitle, this.createDateTime,
+  FrontNode(this.noteID, this.noteTitle, this.createDateTime,
       this.latestEditDateTime);
+}
+
+class BackNode {
+  String noteContent;
+  FrontNode frontNode;
+  BackNode(this.frontNode,this.noteContent);
 }

@@ -4,22 +4,22 @@ import 'package:flutter_and_apis/model/api_handler.dart';
 
 import 'package:flutter_and_apis/model/handler.dart';
 
+// ignore: must_be_immutable
 class Modify extends StatelessWidget {
-  Nodes? node;
+  BackNode? backNode;
   int modiifyState;
   final _nameController = TextEditingController();
   final _lastController = TextEditingController();
-  Modify(this.modiifyState, {Key? key, this.node}) : super(key: key);
+  Modify(this.modiifyState, {Key? key, this.backNode}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final key = GlobalKey<ScaffoldState>();
 
-    _nameController.text = modiifyState == 1 ? node!.noteID : "";
-    _lastController.text =
-        modiifyState == 1 ? node!.createDateTime.toString() : "";
+    _nameController.text = modiifyState == 1 ? backNode!.frontNode.noteTitle : "";
+    _lastController.text = modiifyState == 1 ? backNode!.noteContent : "";
     return Scaffold(
-      key:key,
+      key: key,
       appBar: AppBar(
         title: Text(modiifyState == 1 ? "Modify" : "Create New"),
       ),
@@ -49,18 +49,29 @@ class Modify extends StatelessWidget {
               height: 45,
               child: ElevatedButton(
                 onPressed: () async {
-                  InsertNode node = InsertNode(
+                  FocusScope.of(key.currentContext!).unfocus();
+
+                  InsertNode newNode = InsertNode(
                       noteTitle: _nameController.text,
                       noteContent: _lastController.text);
-                  final result = await NodesServices().createNode(node);
+                  // ignore: prefer_typing_uninitialized_variables
+                  final result;
+                  if (modiifyState == 0) {
+                    result = await NodesServices().createNode(newNode);
+                  } else {
+                    result =
+                        await NodesServices().modifyNode(newNode, backNode!.frontNode.noteID);
+                  }
+
                   if (result.data == false) {
-                    key.currentState!.showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("$result.errorMsg"),
                         duration: const Duration(seconds: 3),
                       ),
                     );
                   } else {
+                    // ignore: deprecated_member_use
                     key.currentState!.showSnackBar(
                       const SnackBar(
                         content: Text("Success"),
