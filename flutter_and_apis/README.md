@@ -1,16 +1,14 @@
-# flutter_and_apis
+# **Flutter & API 's**
+ In this project I tried working with apis as name suggest :smiley: worked on 
+ - Fetching Data
+ - Fetching Particular Node
+ - Pushing Data
+ - Modifying Data
+ - Deleting Data
+ 
+For this I used [Swagger UI](https://tq-notes-api-jkrgrdggbq-el.a.run.app/swagger/index.html)   <-- very simple and very easy to use has every basic method that we learn during Rest API 
 
-A new Flutter project.
+## App Interface 
+    [Interface Gif]{}
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+:dart: Happy Coding :smiley:

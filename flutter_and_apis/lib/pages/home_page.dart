@@ -119,6 +119,18 @@ class _MyHomePageState extends State<MyHomePage> {
         final val = await showDialog(
             context: context, builder: (context1) => const TileDelete());
 
+        if (val) {
+          final result = await services.deleteNode(node.noteID);
+          if (result.data == false) {
+            ScaffoldMessenger.of(context1).showSnackBar(
+              const SnackBar(
+                content: Text("Sorry Error Occured"),
+              ),
+            );
+            return !val;
+          }
+        }
+
         return val;
       },
       child: ListTile(

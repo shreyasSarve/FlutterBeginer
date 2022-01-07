@@ -23,9 +23,7 @@ class NodesServices {
   };
   Future<ApiResponse<List<FrontNode>>> getResponce() {
     return http.get(Uri.parse(url + '/notes'), headers: header).then((data) {
-      
       if (data.statusCode == 200) {
-   
         final jsonData = json.decode(data.body);
         final nodes = <FrontNode>[];
         for (var item in jsonData) {
@@ -53,12 +51,9 @@ class NodesServices {
   }
 
   Future<ApiResponse<String>> getNode(String id) {
-    return http
-        .get(Uri.parse(url + '/notes/'+id), headers: header)
-        .then(
+    return http.get(Uri.parse(url + '/notes/' + id), headers: header).then(
       (value) {
         if (value.statusCode == 200) {
-          
           final jsonData = json.decode(value.body);
           return ApiResponse<String>(data: jsonData['noteContent']);
         } else {
@@ -94,10 +89,27 @@ class NodesServices {
             headers: header, body: json.encode(node.toJson()))
         .then(
       (value) {
-        if (value.statusCode == 204) {     
+        if (value.statusCode == 204) {
           return ApiResponse<bool>(data: true);
         } else {
-          return ApiResponse(data: false, error: true, errorMsg: "Sorry Didi");
+          return ApiResponse<bool>(data: false, error: true, errorMsg: "Sorry Didi");
+        }
+      },
+    );
+  }
+
+  Future<ApiResponse<bool>> deleteNode(String id) {
+    return http
+        .delete(
+      Uri.parse(url + '/notes/' + id),
+      headers: header,
+    )
+        .then(
+      (value) {
+        if (value.statusCode == 204) {
+          return ApiResponse<bool>(data: true);
+        } else {
+          return ApiResponse<bool>(data: false, error: true, errorMsg: "Sorry Didi");
         }
       },
     );
