@@ -1,21 +1,25 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter_and_apis/customData/list.dart';
+import 'package:flutter_and_apis/model/add_node.dart';
+import 'package:flutter_and_apis/model/api_handler.dart';
+
 import 'package:flutter_and_apis/model/handler.dart';
 
 class Modify extends StatelessWidget {
-  Person? per;
+  Nodes? node;
   int modiifyState;
   final _nameController = TextEditingController();
   final _lastController = TextEditingController();
-  Modify(this.modiifyState, {Key? key, this.per}) : super(key: key);
+  Modify(this.modiifyState, {Key? key, this.node}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _nameController.text = modiifyState == 1 ? per!.name : "";
-    _lastController.text = modiifyState == 1 ? per!.lastName : "";
+    final key = GlobalKey<ScaffoldState>();
+
+    _nameController.text = modiifyState == 1 ? node!.noteID : "";
+    _lastController.text =
+        modiifyState == 1 ? node!.createDateTime.toString() : "";
     return Scaffold(
+      key:key,
       appBar: AppBar(
         title: Text(modiifyState == 1 ? "Modify" : "Create New"),
       ),
@@ -44,15 +48,27 @@ class Modify extends StatelessWidget {
               width: double.infinity,
               height: 45,
               child: ElevatedButton(
-                onPressed: () {
-                  if (modiifyState == 0) {
-                    myData.add(
-                        Person(myData.length+1,_lastController.text, _nameController.text));
-                    print(_lastController.text);
-                    
-                    print(myData);
+                onPressed: () async {
+                  InsertNode node = InsertNode(
+                      noteTitle: _nameController.text,
+                      noteContent: _lastController.text);
+                  final result = await NodesServices().createNode(node);
+                  if (result.data == false) {
+                    key.currentState!.showSnackBar(
+                      SnackBar(
+                        content: Text("$result.errorMsg"),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  } else {
+                    key.currentState!.showSnackBar(
+                      const SnackBar(
+                        content: Text("Success"),
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                    Navigator.of(context).pop();
                   }
-                  Navigator.of(context).pop();
                 },
                 child: const Text("Submit"),
                 style: ElevatedButton.styleFrom(primary: Colors.blue.shade900),

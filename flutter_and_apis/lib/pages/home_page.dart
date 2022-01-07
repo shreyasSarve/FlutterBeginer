@@ -1,5 +1,7 @@
+
+
 import 'package:flutter/material.dart';
-import 'package:flutter_and_apis/customData/list.dart';
+import 'package:flutter_and_apis/model/api_handler.dart';
 import 'package:flutter_and_apis/model/handler.dart';
 import 'package:flutter_and_apis/pages/click.dart';
 import 'package:flutter_and_apis/widgets/tile_delete.dart';
@@ -11,29 +13,66 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+List<Nodes>? myData;
+bool _isLoading = true;
+
 class _MyHomePageState extends State<MyHomePage> {
+  late ApiResponse<List<Nodes>> _apiResponse;
+  NodesServices services = NodesServices();
+  final globalKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
+    // services.getResponce().then((data) => _apiResponse = data);
+    _fetchData();
+  }
+
+  _fetchData() async {
+    print("Inside _fetch");
     setState(() {
-      myData;
+      _isLoading = true;
     });
+    _apiResponse = await services.getResponce();
+
+    setState(() {
+      _isLoading = false;
+    });
+    print("Hello Data ${_apiResponse.data[1]}");
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contex) {
     return Scaffold(
+      key: globalKey,
       appBar: AppBar(
         title: const Text("Working With APIs"),
         backgroundColor: Colors.blue.shade900,
       ),
-      body: ListView.separated(
-          itemBuilder: (_, index) => _buildListTile(myData[index]),
-          separatorBuilder: (_, __) => const Divider(
-                height: 8,
-                color: Colors.blue,
+      body: Builder(
+        builder: (context1) {
+          if (_isLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Colors.green.shade900,
               ),
-          itemCount: myData.length),
+            );
+          }
+          if (_apiResponse.error) {
+            return Container(
+              color: Colors.red,
+            );
+          }
+          return ListView.separated(
+              itemBuilder: (_, index) => _apiResponse.error
+                  ? Text(_apiResponse.errorMsg.toString())
+                  : _buildListTile(_apiResponse.data[index], context1),
+              separatorBuilder: (_, __) => const Divider(
+                    height: 8,
+                    color: Colors.blue,
+                  ),
+              itemCount: _apiResponse.data.length);
+        },
+      ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -55,13 +94,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _onFloatingActionPress() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => Modify(0)));
+    globalKey.currentState!.hideCurrentSnackBar();
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Modify(0)))
+        .then((value) => _fetchData());
   }
 
-  Widget _buildListTile(Person person) {
+  Widget _buildListTile(Nodes node, BuildContext context1) {
     return Dismissible(
-      key: ValueKey(person.id),
+      key: ValueKey(node.noteID),
       direction: DismissDirection.startToEnd,
       background: Container(
         alignment: Alignment.centerLeft,
@@ -72,32 +112,23 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       onDismissed: (direction) {
-        if (myData.contains(person)) {
+        if (_apiResponse.data.contains(node)) {
           setState(() {
-            myData.remove(person);
+            _apiResponse.data.remove(node);
           });
         }
       },
       confirmDismiss: (direction) async {
         final val = await showDialog(
-            context: context, builder: (context) => const TileDelete());
+            context: context, builder: (context1) => const TileDelete());
 
         return val;
       },
       child: ListTile(
-        title: Text(person.name),
-        subtitle: Text(person.lastName),
-        leading: person.ico,
+        title: Text(node.noteTitle),
+        subtitle: Text(node.createDateTime.toString()),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Modify(
-                1,
-                per: person,
-              ),
-            ),
-          );
+          Scaffold.of(context1).showSnackBar(SnackBar(content: Text("hellow")));
         },
       ),
     );
