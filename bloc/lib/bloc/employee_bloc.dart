@@ -1,8 +1,13 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 
 import 'package:bloc/employye.dart';
 
+enum EmployeeActions { Add, IncrementSalary, DecrementSalary }
+
 class EmployeeBloc {
+  // ignore: prefer_final_fields
   List<Employee> _employeeList = [
     Employee(1, "Shreyas Sarve", 10000),
     Employee(2, "Shruti Sarve", 20000),
@@ -13,21 +18,25 @@ class EmployeeBloc {
   final _employeeStreamController = StreamController<List<Employee>>();
   final _employeeSalaryIncrementController = StreamController<Employee>();
   final _employeeSalaryDecrementController = StreamController<Employee>();
+  final _employeeAddingController = StreamController<Employee>();
 
 //getters
-  Stream<List<Employee>> get employeeListStream => _employeeStreamController.stream;
+  Stream<List<Employee>> get employeeListStream =>
+      _employeeStreamController.stream;
   StreamSink<List<Employee>> get employeeListSink =>
       _employeeStreamController.sink;
 
   StreamSink<Employee> get salaryIncrement =>
       _employeeSalaryIncrementController.sink;
-  StreamSink<Employee> get salaryDecreament =>
+  StreamSink<Employee> get salaryDecrement =>
       _employeeSalaryDecrementController.sink;
+  StreamSink<Employee> get employeeAdded => _employeeAddingController.sink;
 
   EmployeeBloc() {
     _employeeStreamController.add(_employeeList);
-    _employeeSalaryDecrementController.stream.listen(incrementSalary);
-    _employeeSalaryIncrementController.stream.listen(decrementSalary);
+    _employeeSalaryIncrementController.stream.listen(incrementSalary);
+    _employeeSalaryDecrementController.stream.listen(decrementSalary);
+    _employeeAddingController.stream.listen(addEmployee);
   }
   incrementSalary(Employee employee) {
     double incrementedSalary = employee.salary * 20 / 100;
@@ -40,6 +49,16 @@ class EmployeeBloc {
     double decrementedSalary = employee.salary * 20 / 100;
     _employeeList[employee.id - 1].salary = employee.salary - decrementedSalary;
 
+    employeeListSink.add(_employeeList);
+  }
+
+  addEmployee(employee) {
+    Employee employee = Employee(
+      _employeeList.length + 1,
+      "Shreyas Sarve",
+      50000.0,
+    );
+    _employeeList.add(employee);
     employeeListSink.add(_employeeList);
   }
 
