@@ -1,6 +1,7 @@
 import 'package:bloc/bloc/employee_bloc.dart';
 import 'package:bloc/employye.dart';
 import 'package:bloc/ui/bottom_sheet.dart';
+import 'package:bloc/ui/netwok_image.dart';
 import 'package:flutter/material.dart';
 
 class Homepage extends StatefulWidget {
@@ -11,6 +12,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  bool isSheetOpen = false;
   final EmployeeBloc _employeeBloc = EmployeeBloc();
   @override
   void dispose() {
@@ -24,6 +26,7 @@ class _HomepageState extends State<Homepage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
+          actions: [buildFloatingAction()],
           title: const Text(
             "Bloc App",
           ),
@@ -42,18 +45,14 @@ class _HomepageState extends State<Homepage> {
                         elevation: 5.0,
                         color: Colors.white,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Text(
-                                snapshot.data![index].id.toString(),
-                                style: const TextStyle(
-                                    fontSize: 40, fontWeight: FontWeight.bold),
-                              ),
+                            const Padding(
+                              padding:  EdgeInsets.all(5),
+                              child: CircularNetworkImage()
                             ),
                             const SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(15),
@@ -116,23 +115,39 @@ class _HomepageState extends State<Homepage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(
-            Icons.add,
-            size: 40,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            
-
-            showModalBottomSheet(
-              context: context,
-              backgroundColor: Colors.transparent,
-              builder: (context) => const BottomSwipeSheet(),
-            );
-          },
-        ),
       ),
     );
   }
+
+  buildFloatingAction() => FloatingActionButton(
+        backgroundColor: Colors.transparent,
+        child: isSheetOpen
+            ? const Icon(
+                Icons.exit_to_app_rounded,
+                size: 40,
+                color: Colors.white,
+              )
+            : const Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 40,
+              ),
+        onPressed: () async {
+          setState(
+            () => isSheetOpen = true,
+          );
+          Employee _employee = await showModalBottomSheet(
+            isScrollControlled: true,
+            enableDrag: true,
+            useRootNavigator: true,
+            context: context,
+            backgroundColor: Colors.transparent,
+            builder: (context) => const BottomSwipeSheet(),
+          );
+          _employeeBloc.addEmployee(_employee);
+          setState(
+            () => isSheetOpen = false,
+          );
+        },
+      );
 }

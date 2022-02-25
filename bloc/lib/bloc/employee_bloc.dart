@@ -52,12 +52,8 @@ class EmployeeBloc {
     employeeListSink.add(_employeeList);
   }
 
-  addEmployee(employee) {
-    Employee employee = Employee(
-      _employeeList.length + 1,
-      "Shreyas Sarve",
-      50000.0,
-    );
+  addEmployee(Employee employee) {
+    employee.id = _employeeList.length + 1;
     _employeeList.add(employee);
     employeeListSink.add(_employeeList);
   }
@@ -66,5 +62,6 @@ class EmployeeBloc {
     _employeeStreamController.close();
     _employeeSalaryIncrementController.close();
     _employeeSalaryDecrementController.close();
+    _employeeAddingController.close();
   }
 }

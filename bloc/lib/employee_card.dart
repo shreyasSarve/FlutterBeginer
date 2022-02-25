@@ -6,7 +6,7 @@ class EmployeeCard extends StatefulWidget {
   
   final Employee employee;
 
-  EmployeeCard(this.employee, {Key? key}) : super(key: key);
+  const EmployeeCard(this.employee, {Key? key}) : super(key: key);
 
   @override
   State<EmployeeCard> createState() => _EmployeeCardState();
