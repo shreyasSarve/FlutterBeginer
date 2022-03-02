@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _animationController.addListener(() {
       setState(() {
         if (_opacityAnimation2.isCompleted) {
-          stateCompleted();
+          
         }
       });
     });
@@ -47,14 +47,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _animationController.forward();
     Future.delayed(const Duration(seconds: 2)).then((value) =>
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const NextScreen())));
+            .pushReplacement(MaterialPageRoute(builder: (context) => const NextScreen())));
   }
 
-  stateCompleted() {
-    setState(() {
-      flag = true;
-    });
-  }
+  
 
   @override
   void dispose() {

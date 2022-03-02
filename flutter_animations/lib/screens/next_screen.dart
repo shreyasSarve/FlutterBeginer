@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/screens/home_page.dart';
+import 'package:flutter_animations/routes/custom_pageroutes.dart';
+import 'package:flutter_animations/screens/third_screen.dart';
 
 class NextScreen extends StatefulWidget {
   const NextScreen({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _NextScreenState extends State<NextScreen>
     _animationController = AnimationController(
         vsync: this,
         duration: const Duration(
-          seconds: 3,
+          seconds: 1,
         ));
     _animationDownFromStart = Tween<double>(begin: 0.0, end: 0.7).animate(
       CurvedAnimation(
@@ -47,12 +48,21 @@ class _NextScreenState extends State<NextScreen>
       setState(() {});
     });
     _animationController.forward();
+    Future.delayed(const Duration(seconds: 2)).then((value) =>
+        Navigator.of(context)
+            .pushReplacement(CustomPageRoute(child: const ThirdScreen())));
+  }
+
+  @override
+  void dispose() {
+
+    super.dispose();
+    _animationController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
