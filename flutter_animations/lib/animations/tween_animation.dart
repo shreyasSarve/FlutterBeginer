@@ -54,28 +54,27 @@ class _TweenAnimationState extends State<TweenAnimation>
         ),
       ),
       body: Center(
-        child: Container(
-          width: 150 * _animation.value,
-          height: 150 * _animation.value,
-          child: const Icon(
-            Icons.headset_rounded,
-            size: 50,
-            color: Colors.white,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.red,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                offset: Offset(-1, -1),
-                spreadRadius: 1,
-                blurRadius: 15,
-                color: Colors.red,
-              )
-            ],
-          ),
+          child: Container(
+        width: 150 * _animation.value,
+        height: 150 * _animation.value,
+        child: const Icon(
+          Icons.headset_rounded,
+          size: 50,
+          color: Colors.white,
         ),
-      ),
+        decoration: const BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(-1, -1),
+              spreadRadius: 1,
+              blurRadius: 15,
+              color: Colors.red,
+            )
+          ],
+        ),
+      )),
     );
   }
 }

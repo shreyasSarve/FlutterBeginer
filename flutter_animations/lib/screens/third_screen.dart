@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/animations/ripple_animation.dart';
-import 'package:flutter_animations/animations/tween_animation.dart';
+import 'package:flutter_animations/builders/animation_card.dart';
+import 'package:flutter_animations/model/data.dart';
 
 class ThirdScreen extends StatelessWidget {
   const ThirdScreen({Key? key}) : super(key: key);
@@ -17,28 +17,12 @@ class ThirdScreen extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const RippleAnimation(),
-                  ),
-                );
-              },
-              child: const Text("Click Me Plz")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const TweenAnimation(),
-                  ),
-                );
-              },
-              child: const Text("Click Me Plz")),
-        ],
-      ),
+      body: ListView.separated(
+          itemBuilder: (context, index) => AnimationCard(animations[index]),
+          separatorBuilder: (context, index) => const SizedBox(
+                height: 10,
+              ),
+          itemCount: animations.length),
     );
   }
 }

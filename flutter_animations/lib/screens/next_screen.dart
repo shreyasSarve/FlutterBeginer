@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/routes/custom_pageroutes.dart';
+import 'package:flutter_animations/builders/custom_pageroutes.dart';
 import 'package:flutter_animations/screens/third_screen.dart';
 
 class NextScreen extends StatefulWidget {
